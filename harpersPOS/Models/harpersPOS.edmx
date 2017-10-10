@@ -1,0 +1,567 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="harpersPOSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Devices">
+          <Key>
+            <PropertyRef Name="DeviceID" />
+          </Key>
+          <Property Name="DeviceID" Type="varchar" MaxLength="40" Nullable="false" />
+          <Property Name="DeviceName" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="EventID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Drinks">
+          <Key>
+            <PropertyRef Name="DrinkID" />
+          </Key>
+          <Property Name="DrinkID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Category" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Price" Type="decimal" Precision="15" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EventDrink">
+          <Key>
+            <PropertyRef Name="EventID" />
+            <PropertyRef Name="DrinkID" />
+          </Key>
+          <Property Name="EventID" Type="int" Nullable="false" />
+          <Property Name="DrinkID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Events">
+          <Key>
+            <PropertyRef Name="EventID" />
+          </Key>
+          <Property Name="EventID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Tabs" Type="bit" Nullable="false" />
+          <Property Name="CashLimit" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="TimeLimit" Type="datetime2" Precision="0" />
+          <Property Name="Status" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OrderDrink">
+          <Key>
+            <PropertyRef Name="OrderDrinkID" />
+          </Key>
+          <Property Name="OrderDrinkID" Type="int" Nullable="false" />
+          <Property Name="OrderID" Type="int" Nullable="false" />
+          <Property Name="DrinkID" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Orders">
+          <Key>
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="OrderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Time" Type="datetime2" Precision="0" Nullable="false" />
+          <Property Name="EventID" Type="int" Nullable="false" />
+          <Property Name="PreOrder" Type="bit" Nullable="false" />
+          <Property Name="OrderType" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="TabID" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'harpersPOS.dbo.Settings' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Settings">
+          <Key>
+            <PropertyRef Name="ManagerPassword" />
+          </Key>
+          <Property Name="ManagerPassword" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Tabs">
+          <Key>
+            <PropertyRef Name="TabID" />
+          </Key>
+          <Property Name="TabID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EventID" Type="int" Nullable="false" />
+          <Property Name="TableNumber" Type="smallint" Nullable="false" />
+          <Property Name="Open" Type="bit" Nullable="false" />
+          <Property Name="PriceLimit" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="TimeLimit" Type="datetime2" Precision="0" />
+        </EntityType>
+        <Association Name="Devices_fk0">
+          <End Role="Events" Type="Self.Events" Multiplicity="1" />
+          <End Role="Devices" Type="Self.Devices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Events">
+              <PropertyRef Name="EventID" />
+            </Principal>
+            <Dependent Role="Devices">
+              <PropertyRef Name="EventID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EventDrink_fk0">
+          <End Role="Events" Type="Self.Events" Multiplicity="1" />
+          <End Role="EventDrink" Type="Self.EventDrink" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Events">
+              <PropertyRef Name="EventID" />
+            </Principal>
+            <Dependent Role="EventDrink">
+              <PropertyRef Name="EventID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EventDrink_fk1">
+          <End Role="Drinks" Type="Self.Drinks" Multiplicity="1" />
+          <End Role="EventDrink" Type="Self.EventDrink" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Drinks">
+              <PropertyRef Name="DrinkID" />
+            </Principal>
+            <Dependent Role="EventDrink">
+              <PropertyRef Name="DrinkID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="OrderDrink_fk0">
+          <End Role="Orders" Type="Self.Orders" Multiplicity="1" />
+          <End Role="OrderDrink" Type="Self.OrderDrink" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Orders">
+              <PropertyRef Name="OrderID" />
+            </Principal>
+            <Dependent Role="OrderDrink">
+              <PropertyRef Name="OrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="OrderDrink_fk1">
+          <End Role="Drinks" Type="Self.Drinks" Multiplicity="1" />
+          <End Role="OrderDrink" Type="Self.OrderDrink" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Drinks">
+              <PropertyRef Name="DrinkID" />
+            </Principal>
+            <Dependent Role="OrderDrink">
+              <PropertyRef Name="DrinkID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Orders_fk0">
+          <End Role="Events" Type="Self.Events" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Events">
+              <PropertyRef Name="EventID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="EventID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Orders_fk1">
+          <End Role="Tabs" Type="Self.Tabs" Multiplicity="0..1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tabs">
+              <PropertyRef Name="TabID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="TabID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Tabs_fk0">
+          <End Role="Events" Type="Self.Events" Multiplicity="1" />
+          <End Role="Tabs" Type="Self.Tabs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Events">
+              <PropertyRef Name="EventID" />
+            </Principal>
+            <Dependent Role="Tabs">
+              <PropertyRef Name="EventID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="harpersPOSModelStoreContainer">
+          <EntitySet Name="Devices" EntityType="Self.Devices" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Drinks" EntityType="Self.Drinks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EventDrink" EntityType="Self.EventDrink" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Events" EntityType="Self.Events" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderDrink" EntityType="Self.OrderDrink" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tabs" EntityType="Self.Tabs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Settings" EntityType="Self.Settings" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Settings].[ManagerPassword] AS [ManagerPassword]
+    FROM [dbo].[Settings] AS [Settings]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="Devices_fk0" Association="Self.Devices_fk0">
+            <End Role="Events" EntitySet="Events" />
+            <End Role="Devices" EntitySet="Devices" />
+          </AssociationSet>
+          <AssociationSet Name="EventDrink_fk0" Association="Self.EventDrink_fk0">
+            <End Role="Events" EntitySet="Events" />
+            <End Role="EventDrink" EntitySet="EventDrink" />
+          </AssociationSet>
+          <AssociationSet Name="EventDrink_fk1" Association="Self.EventDrink_fk1">
+            <End Role="Drinks" EntitySet="Drinks" />
+            <End Role="EventDrink" EntitySet="EventDrink" />
+          </AssociationSet>
+          <AssociationSet Name="OrderDrink_fk0" Association="Self.OrderDrink_fk0">
+            <End Role="Orders" EntitySet="Orders" />
+            <End Role="OrderDrink" EntitySet="OrderDrink" />
+          </AssociationSet>
+          <AssociationSet Name="OrderDrink_fk1" Association="Self.OrderDrink_fk1">
+            <End Role="Drinks" EntitySet="Drinks" />
+            <End Role="OrderDrink" EntitySet="OrderDrink" />
+          </AssociationSet>
+          <AssociationSet Name="Orders_fk0" Association="Self.Orders_fk0">
+            <End Role="Events" EntitySet="Events" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="Orders_fk1" Association="Self.Orders_fk1">
+            <End Role="Tabs" EntitySet="Tabs" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="Tabs_fk0" Association="Self.Tabs_fk0">
+            <End Role="Events" EntitySet="Events" />
+            <End Role="Tabs" EntitySet="Tabs" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="harpersPOSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Device">
+          <Key>
+            <PropertyRef Name="DeviceID" />
+          </Key>
+          <Property Name="DeviceID" Type="String" MaxLength="40" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DeviceName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="EventID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Event" Relationship="Self.Devices_fk0" FromRole="Devices" ToRole="Events" />
+        </EntityType>
+        <EntityType Name="Drink">
+          <Key>
+            <PropertyRef Name="DrinkID" />
+          </Key>
+          <Property Name="DrinkID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Precision="15" Scale="2" Nullable="false" />
+          <NavigationProperty Name="OrderDrinks" Relationship="Self.OrderDrink_fk1" FromRole="Drinks" ToRole="OrderDrink" />
+          <NavigationProperty Name="Events" Relationship="Self.EventDrink" FromRole="Drinks" ToRole="Events" />
+        </EntityType>
+        <EntityType Name="Event">
+          <Key>
+            <PropertyRef Name="EventID" />
+          </Key>
+          <Property Name="EventID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Tabs" Type="Boolean" Nullable="false" />
+          <Property Name="CashLimit" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="TimeLimit" Type="DateTime" Precision="0" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Devices" Relationship="Self.Devices_fk0" FromRole="Events" ToRole="Devices" />
+          <NavigationProperty Name="Orders" Relationship="Self.Orders_fk0" FromRole="Events" ToRole="Orders" />
+          <NavigationProperty Name="Tabs1" Relationship="Self.Tabs_fk0" FromRole="Events" ToRole="Tabs" />
+          <NavigationProperty Name="Drinks" Relationship="Self.EventDrink" FromRole="Events" ToRole="Drinks" />
+        </EntityType>
+        <EntityType Name="OrderDrink">
+          <Key>
+            <PropertyRef Name="OrderDrinkID" />
+          </Key>
+          <Property Name="OrderDrinkID" Type="Int32" Nullable="false" />
+          <Property Name="OrderID" Type="Int32" Nullable="false" />
+          <Property Name="DrinkID" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Drink" Relationship="Self.OrderDrink_fk1" FromRole="OrderDrink" ToRole="Drinks" />
+          <NavigationProperty Name="Order" Relationship="Self.OrderDrink_fk0" FromRole="OrderDrink" ToRole="Orders" />
+        </EntityType>
+        <EntityType Name="Order">
+          <Key>
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="OrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Time" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="EventID" Type="Int32" Nullable="false" />
+          <Property Name="PreOrder" Type="Boolean" Nullable="false" />
+          <Property Name="OrderType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TabID" Type="Int32" />
+          <NavigationProperty Name="Event" Relationship="Self.Orders_fk0" FromRole="Orders" ToRole="Events" />
+          <NavigationProperty Name="OrderDrinks" Relationship="Self.OrderDrink_fk0" FromRole="Orders" ToRole="OrderDrink" />
+          <NavigationProperty Name="Tab" Relationship="Self.Orders_fk1" FromRole="Orders" ToRole="Tabs" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Tab">
+          <Key>
+            <PropertyRef Name="TabID" />
+          </Key>
+          <Property Name="TabID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EventID" Type="Int32" Nullable="false" />
+          <Property Name="TableNumber" Type="Int16" Nullable="false" />
+          <Property Name="Open" Type="Boolean" Nullable="false" />
+          <Property Name="PriceLimit" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="TimeLimit" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Event" Relationship="Self.Tabs_fk0" FromRole="Tabs" ToRole="Events" />
+          <NavigationProperty Name="Orders" Relationship="Self.Orders_fk1" FromRole="Tabs" ToRole="Orders" />
+        </EntityType>
+        <EntityType Name="Setting">
+          <Key>
+            <PropertyRef Name="ManagerPassword" />
+          </Key>
+          <Property Name="ManagerPassword" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <Association Name="Devices_fk0">
+          <End Role="Events" Type="Self.Event" Multiplicity="1" />
+          <End Role="Devices" Type="Self.Device" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Events">
+              <PropertyRef Name="EventID" />
+            </Principal>
+            <Dependent Role="Devices">
+              <PropertyRef Name="EventID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="OrderDrink_fk1">
+          <End Role="Drinks" Type="Self.Drink" Multiplicity="1" />
+          <End Role="OrderDrink" Type="Self.OrderDrink" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Drinks">
+              <PropertyRef Name="DrinkID" />
+            </Principal>
+            <Dependent Role="OrderDrink">
+              <PropertyRef Name="DrinkID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Orders_fk0">
+          <End Role="Events" Type="Self.Event" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Events">
+              <PropertyRef Name="EventID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="EventID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Tabs_fk0">
+          <End Role="Events" Type="Self.Event" Multiplicity="1" />
+          <End Role="Tabs" Type="Self.Tab" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Events">
+              <PropertyRef Name="EventID" />
+            </Principal>
+            <Dependent Role="Tabs">
+              <PropertyRef Name="EventID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="OrderDrink_fk0">
+          <End Role="Orders" Type="Self.Order" Multiplicity="1" />
+          <End Role="OrderDrink" Type="Self.OrderDrink" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Orders">
+              <PropertyRef Name="OrderID" />
+            </Principal>
+            <Dependent Role="OrderDrink">
+              <PropertyRef Name="OrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Orders_fk1">
+          <End Role="Tabs" Type="Self.Tab" Multiplicity="0..1" />
+          <End Role="Orders" Type="Self.Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tabs">
+              <PropertyRef Name="TabID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="TabID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EventDrink">
+          <End Role="Events" Type="Self.Event" Multiplicity="*" />
+          <End Role="Drinks" Type="Self.Drink" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="harpersPOSEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Devices" EntityType="Self.Device" />
+          <EntitySet Name="Drinks" EntityType="Self.Drink" />
+          <EntitySet Name="Events" EntityType="Self.Event" />
+          <EntitySet Name="OrderDrinks" EntityType="Self.OrderDrink" />
+          <EntitySet Name="Orders" EntityType="Self.Order" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="Tabs" EntityType="Self.Tab" />
+          <EntitySet Name="Settings" EntityType="Self.Setting" />
+          <AssociationSet Name="Devices_fk0" Association="Self.Devices_fk0">
+            <End Role="Events" EntitySet="Events" />
+            <End Role="Devices" EntitySet="Devices" />
+          </AssociationSet>
+          <AssociationSet Name="OrderDrink_fk1" Association="Self.OrderDrink_fk1">
+            <End Role="Drinks" EntitySet="Drinks" />
+            <End Role="OrderDrink" EntitySet="OrderDrinks" />
+          </AssociationSet>
+          <AssociationSet Name="Orders_fk0" Association="Self.Orders_fk0">
+            <End Role="Events" EntitySet="Events" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="Tabs_fk0" Association="Self.Tabs_fk0">
+            <End Role="Events" EntitySet="Events" />
+            <End Role="Tabs" EntitySet="Tabs" />
+          </AssociationSet>
+          <AssociationSet Name="OrderDrink_fk0" Association="Self.OrderDrink_fk0">
+            <End Role="Orders" EntitySet="Orders" />
+            <End Role="OrderDrink" EntitySet="OrderDrinks" />
+          </AssociationSet>
+          <AssociationSet Name="Orders_fk1" Association="Self.Orders_fk1">
+            <End Role="Tabs" EntitySet="Tabs" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="EventDrink" Association="Self.EventDrink">
+            <End Role="Events" EntitySet="Events" />
+            <End Role="Drinks" EntitySet="Drinks" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="harpersPOSModelStoreContainer" CdmEntityContainer="harpersPOSEntities">
+          <EntitySetMapping Name="Devices">
+            <EntityTypeMapping TypeName="harpersPOSModel.Device">
+              <MappingFragment StoreEntitySet="Devices">
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
+                <ScalarProperty Name="EventID" ColumnName="EventID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Drinks">
+            <EntityTypeMapping TypeName="harpersPOSModel.Drink">
+              <MappingFragment StoreEntitySet="Drinks">
+                <ScalarProperty Name="DrinkID" ColumnName="DrinkID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Events">
+            <EntityTypeMapping TypeName="harpersPOSModel.Event">
+              <MappingFragment StoreEntitySet="Events">
+                <ScalarProperty Name="EventID" ColumnName="EventID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Tabs" ColumnName="Tabs" />
+                <ScalarProperty Name="CashLimit" ColumnName="CashLimit" />
+                <ScalarProperty Name="TimeLimit" ColumnName="TimeLimit" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrderDrinks">
+            <EntityTypeMapping TypeName="harpersPOSModel.OrderDrink">
+              <MappingFragment StoreEntitySet="OrderDrink">
+                <ScalarProperty Name="OrderDrinkID" ColumnName="OrderDrinkID" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="DrinkID" ColumnName="DrinkID" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Orders">
+            <EntityTypeMapping TypeName="harpersPOSModel.Order">
+              <MappingFragment StoreEntitySet="Orders">
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="EventID" ColumnName="EventID" />
+                <ScalarProperty Name="PreOrder" ColumnName="PreOrder" />
+                <ScalarProperty Name="OrderType" ColumnName="OrderType" />
+                <ScalarProperty Name="TabID" ColumnName="TabID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="harpersPOSModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tabs">
+            <EntityTypeMapping TypeName="harpersPOSModel.Tab">
+              <MappingFragment StoreEntitySet="Tabs">
+                <ScalarProperty Name="TabID" ColumnName="TabID" />
+                <ScalarProperty Name="EventID" ColumnName="EventID" />
+                <ScalarProperty Name="TableNumber" ColumnName="TableNumber" />
+                <ScalarProperty Name="Open" ColumnName="Open" />
+                <ScalarProperty Name="PriceLimit" ColumnName="PriceLimit" />
+                <ScalarProperty Name="TimeLimit" ColumnName="TimeLimit" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Settings">
+            <EntityTypeMapping TypeName="harpersPOSModel.Setting">
+              <MappingFragment StoreEntitySet="Settings">
+                <ScalarProperty Name="ManagerPassword" ColumnName="ManagerPassword" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="EventDrink" TypeName="harpersPOSModel.EventDrink" StoreEntitySet="EventDrink">
+            <EndProperty Name="Events">
+              <ScalarProperty Name="EventID" ColumnName="EventID" />
+            </EndProperty>
+            <EndProperty Name="Drinks">
+              <ScalarProperty Name="DrinkID" ColumnName="DrinkID" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
