@@ -1,0 +1,109 @@
+﻿@model harpersPOS.Models.Event
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Event</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.EventID)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Tabs, "Enable Bar Tabs?", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox" new { onchange="tabsValueChanged()" }>
+                    @Html.EditorFor(model => model.Tabs, new { htmlAttributes = new { @id = "Tabs" } })
+                    @Html.ValidationMessageFor(model => model.Tabs, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CashLimit, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CashLimit, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CashLimit, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TimeLimit, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TimeLimit, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.TimeLimit, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Status, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+<script type="text/javascript">
+
+    if (document.getElementById("Tabs").checked) {
+        document.getElementById("TimeLimit").setAttribute("disabled", "disabled");
+        document.getElementById("CashLimit").setAttribute("disabled", "disabled");
+    } else {
+        document.getElementById("TimeLimit").removeAttribute("disabled");
+        document.getElementById("CashLimit").removeAttribute("disabled");
+    }
+
+    function tabsValueChanged() {
+
+        if (document.getElementById("Tabs").checked) {
+            document.getElementById("TimeLimit").setAttribute("disabled", "disabled");
+            document.getElementById("CashLimit").setAttribute("disabled", "disabled");
+        } else {
+            document.getElementById("TimeLimit").removeAttribute("disabled");
+            document.getElementById("CashLimit").removeAttribute("disabled");
+        }
+    }
+</script>
+
+}
