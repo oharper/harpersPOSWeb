@@ -11,7 +11,8 @@ namespace harpersPOS.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel;
+
     public partial class Event
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -27,7 +28,9 @@ namespace harpersPOS.Models
         public string Name { get; set; }
         public System.DateTime Date { get; set; }
         public bool Tabs { get; set; }
+        [DisplayName("Cash Limit")]
         public Nullable<decimal> CashLimit { get; set; }
+        [DisplayName("Time Limit")]
         public Nullable<System.DateTime> TimeLimit { get; set; }
         public string Status { get; set; }
     
